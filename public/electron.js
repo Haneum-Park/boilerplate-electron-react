@@ -20,39 +20,40 @@ const browserWindowOpts = {
     nodeIntegration: true,
     nodeIntegrationInWorker: true,
     webviewTag: true,
-    webSecurity: true,
+    webSecurity: false,
     alwaysOnTop: false,
+    // contextIsolation: false,
     preload: path.join(__dirname, './preload.js'),
   },
 };
 
-function openUpdateWindow() {
-  updateWindow = new BrowserWindow({
-    ...browserWindowOpts,
-    resizable: false,
-    webPreferences: {
-      webSecurity: false,
-    },
-  });
+// function openUpdateWindow() {
+//   updateWindow = new BrowserWindow({
+//     ...browserWindowOpts,
+//     resizable: false,
+//     webPreferences: {
+//       webSecurity: false,
+//     },
+//   });
 
-  updateWindow.on('closed', () => {
-    updateWindow = null;
-  });
+//   updateWindow.on('closed', () => {
+//     updateWindow = null;
+//   });
 
-  if (isDev) {
-    console.log('[MODE] DEVELOPMENT');
-    updateWindow.loadURL(`http://localhost:${PORT}/#update`);
-  } else {
-    console.log('[MODE] PRODUCTION');
-    updateWindow.removeMenu();
-    updateWindow.loadURL(`file://${path.join(__dirname, './update.html')}#update`);
-  }
-}
+//   if (isDev) {
+//     console.log('[MODE] DEVELOPMENT');
+//     updateWindow.loadURL(`http://localhost:${PORT}/#update`);
+//   } else {
+//     console.log('[MODE] PRODUCTION');
+//     updateWindow.removeMenu();
+//     updateWindow.loadURL(`file://${path.join(__dirname, './update.html')}#update`);
+//   }
+// }
 
-ipcMain.on('register_updateWindow', (event, _data) => {
-  console.log('[UPDATE] Register update window');
-  updateWindowSender = event.sender;
-});
+// ipcMain.on('register_updateWindow', (event, _data) => {
+//   console.log('[UPDATE] Register update window');
+//   updateWindowSender = event.sender;
+// });
 
 // if (process.env.NODE_ENV === 'development') {
 //   // ! If dev-env, Accure error because of config file.
@@ -60,68 +61,68 @@ ipcMain.on('register_updateWindow', (event, _data) => {
 // }
 
 app.on('ready', () => {
-  autoUpdater.checkForUpdates();
+  // autoUpdater.checkForUpdates();
 });
 
-autoUpdater.on('checking-for-update', () => {
-  console.log('[UPDATE] Checking for update..');
-});
+// autoUpdater.on('checking-for-update', () => {
+//   console.log('[UPDATE] Checking for update..');
+// });
 
-autoUpdater.on('error', (err) => {
-  console.error(`[ERROR] ${err}`);
-});
+// autoUpdater.on('error', (err) => {
+//   console.error(`[ERROR] ${err}`);
+// });
 
-autoUpdater.on('download-progress', (progressObj) => {
-  let logMsg = `[DOWNLOAD] ${progressObj.bytesPerSecond} ${logMsg} ${progressObj.precent}% downloading.. (${progressObj.transferred}/${progressObj.total})`;
-  mainWindow.setProgressBar(progressObj.precent / 100);
+// autoUpdater.on('download-progress', (progressObj) => {
+//   let logMsg = `[DOWNLOAD] ${progressObj.bytesPerSecond} ${logMsg} ${progressObj.precent}% downloading.. (${progressObj.transferred}/${progressObj.total})`;
+//   mainWindow.setProgressBar(progressObj.precent / 100);
 
-  console.log(logMsg);
-  if (!!updateWindowSender)
-    updateWindowSender.send('updateProgressPercentage', progressObj.percent);
-  if (progressObj.precent >= 100) {
-    console.log('[DOWNLOAD] Done');
-    if (!!updateWindow) updateWindow.close();
-  }
-});
+//   console.log(logMsg);
+//   if (!!updateWindowSender)
+//     updateWindowSender.send('updateProgressPercentage', progressObj.percent);
+//   if (progressObj.precent >= 100) {
+//     console.log('[DOWNLOAD] Done');
+//     if (!!updateWindow) updateWindow.close();
+//   }
+// });
 
-autoUpdater.on('update-downloaded', (_event, releaseNotes, releaseName) => {
-  if (!!updateWindow) updateWindow.close();
-  mainWindow.setProgressBar(-1);
-  console.log('[UPDATE] DOWNLOAD DONE');
-  const dialogOpts = {
-    type: 'info',
-    buttons: ['Install and Relaunch', 'Quit'],
-    defaultId: 0,
-    cancelId: 1,
-    title: 'Krill Updater',
-    message: process.platform === 'win32' ? releaseNotes : releaseName,
-    detail: '새로운 버전이 릴리스 되었습니다. 재시작 버튼을 눌러 업데이트를 적용해주세요.',
-  };
-  dialog
-    .showMessageBox(dialogOpts)
-    .then((res) => {
-      if (res.response === 0) {
-        autoUpdater.quitAndInstall();
-      } else {
-        app.quit();
-        app.exit();
-      }
-    })
-    .catch((err) => {
-      console.log(`[ERROR] ${err}`);
-    });
-});
+// autoUpdater.on('update-downloaded', (_event, releaseNotes, releaseName) => {
+//   if (!!updateWindow) updateWindow.close();
+//   mainWindow.setProgressBar(-1);
+//   console.log('[UPDATE] DOWNLOAD DONE');
+//   const dialogOpts = {
+//     type: 'info',
+//     buttons: ['Install and Relaunch', 'Quit'],
+//     defaultId: 0,
+//     cancelId: 1,
+//     title: 'Krill Updater',
+//     message: process.platform === 'win32' ? releaseNotes : releaseName,
+//     detail: '새로운 버전이 릴리스 되었습니다. 재시작 버튼을 눌러 업데이트를 적용해주세요.',
+//   };
+//   dialog
+//     .showMessageBox(dialogOpts)
+//     .then((res) => {
+//       if (res.response === 0) {
+//         autoUpdater.quitAndInstall();
+//       } else {
+//         app.quit();
+//         app.exit();
+//       }
+//     })
+//     .catch((err) => {
+//       console.log(`[ERROR] ${err}`);
+//     });
+// });
 
-//신규 업로드가 있을경우 === 구버전
-autoUpdater.on('update-available', function (info) {
-  console.log('[UPDATE] Update is available');
-  openupdateWindowdow();
-});
+// //신규 업로드가 있을경우 === 구버전
+// autoUpdater.on('update-available', function (info) {
+//   console.log('[UPDATE] Update is available');
+//   openupdateWindowdow();
+// });
 
-//신규 업로드가 없을경우 === 최신버전
-autoUpdater.on('update-not-available', function () {
-  console.log('[UPDATE] Update is unavailable');
-});
+// //신규 업로드가 없을경우 === 최신버전
+// autoUpdater.on('update-not-available', function () {
+//   console.log('[UPDATE] Update is unavailable');
+// });
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -139,6 +140,8 @@ function createWindow() {
     mainWindow.loadFile(path.join(__dirname, '../build/index.html'));
     mainWindow.removeMenu();
   }
+
+  require('./src/ipcmain')(mainWindow);
 
   mainWindow.on('closed', () => {
     app.quit();
@@ -159,6 +162,5 @@ console.log('[INFO] App is ready');
 
 console.log(`The tmp PATH is: ${app.getAppPath('temp')}`);
 
-require('./src/ipcmain');
-
 console.log('[INFO] IpcMain is LoadDone');
+
