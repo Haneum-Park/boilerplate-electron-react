@@ -1,0 +1,4 @@
+owner: 13hzcompany
+repo: Krill_Deploy
+provider: github
+updaterCacheDirName: newkrill-updater
