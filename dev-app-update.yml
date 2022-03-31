@@ -1,4 +1,3 @@
-owner: 13hzcompany
-repo: Krill_Deploy
+owner: Haneum-Park
+repo: electron-react-boilerplate
 provider: github
-updaterCacheDirName: newkrill-updater
