@@ -86,15 +86,15 @@ module.exports = {
     },
   },
   plugins: [
-    new webpack.DefinePlugin({
-      process: {
-        argv: JSON.stringify(process.argv),
-        env: {
-          NODE_ENV: JSON.stringify(process.env.NODE_ENV),
-          mode: JSON.stringify(process.env.mode || 'production'),
-        },
-      },
-    }),
+    // new webpack.DefinePlugin({
+    //   process: {
+    //     argv: JSON.stringify(process.argv),
+    //     env: {
+    //       NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+    //       mode: JSON.stringify(process.env.mode || 'production'),
+    //     },
+    //   },
+    // }),
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, './public/index.html'),
       // favicon: path.resolve(__dirname, './public/favicon.ico'),
